@@ -38,14 +38,18 @@ Headers::Headers() {}
 Headers::~Headers() {}
 
 void Headers::addHeader(std::string key, std::string value) {
+    std::transform(key.begin(), key.end(), key.begin(), [](unsigned char c) {
+        return std::tolower(c);
+    });
+
     headers.insert({ key, value });
 }
 
-std::string Headers::getHeader(std::string key) {
+std::string Headers::getHeader(std::string key) const {
     return headers.at(key);
 }
 
-std::string Headers::toString() {
+std::string Headers::toString() const {
     std::string output = "";
 
     for (const auto& key : headers) {
@@ -75,4 +79,8 @@ void Headers::parseFromString(std::string headersStr) {
 
 std::map<std::string, std::string>& Headers::asMap() {
     return headers;
+}
+
+bool Headers::hasHeader(std::string key) const {
+    return headers.count(key) > 0;
 }

@@ -26,13 +26,15 @@ public:
     HttpRequest();
     ~HttpRequest();
 
-    Headers& getHeaders();
+    Headers getHeaders() const;
+
+    void setBody(std::vector<std::uint8_t> v);
 
     // Include the final double CRLF in the buffer
-    void parseHeader(std::uint8_t* buffer, std::size_t length);
+    void parseHeader(const std::uint8_t* buffer, std::size_t length);
 
-    Methods getMethod();
-    std::string getPath();
+    Methods getMethod() const;
+    std::string getPath() const;
 
-    std::vector<std::uint8_t> getBody();
+    std::vector<std::uint8_t> getBody() const;
 };

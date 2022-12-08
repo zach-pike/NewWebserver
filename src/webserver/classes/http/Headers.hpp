@@ -14,10 +14,11 @@ public:
 
     std::map<std::string, std::string>& asMap();
 
+    bool hasHeader(std::string key) const;
     void addHeader(std::string key, std::string value);
-    std::string getHeader(std::string key);
+    std::string getHeader(std::string key) const;
 
     void parseFromString(std::string headersStr);
 
-    std::string toString();
+    std::string toString() const;
 };

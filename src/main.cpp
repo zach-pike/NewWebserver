@@ -1,8 +1,22 @@
 #include "webserver/Webserver.hpp"
-#include "ResourceManager.hpp"
-#include "FileResource.hpp"
+#include "ResourceManagers/ResourceManager.hpp"
+#include "Resources/FileResource.hpp"
+#include "Resources/TextResource.hpp"
 
 #include <iostream>
+
+class MyResource : public IResource {
+public:
+    HttpResponse getResponse(const HttpRequest& req) {
+        auto body = req.getBody();
+        std::string text(body.begin(), body.end());
+
+        std::cout << text << "\n";
+
+        auto a = std::make_shared<TextResource>("Ok", 200);
+        return a->getResponse(req);
+    }
+};
 
 int main(int argc, char** argv) {
     auto controller = std::make_shared<ResourceManager>();
@@ -11,19 +25,17 @@ int main(int argc, char** argv) {
         std::make_shared<FileResource>("/home/zachary/webserver/src/index.html")
     );
 
-    std::string req = "GET / HTTP/1.1\r\nfirst-header: value\r\nsecond-header: value2\r\n\r\n";
+    controller->addResource("/test", std::make_shared<MyResource>());
 
-    HttpRequest request;
-    request.parseHeader((std::uint8_t*)req.c_str(), req.size());
+    controller->addResource("<404Page>",
+        std::make_shared<TextResource>("Could not find page!", 404)
+    );
 
-    auto bytes = controller->
-        getResource(request.getPath())->
-        getResponse(request)->
-        toBytes();
+    Webserver server(8080, "0.0.0.0");
 
-    std::string str(bytes.begin(), bytes.end());
+    server.setResourceController(controller);
 
-    std::cout << str << std::endl;
+    if(!server.start([](std::string s){})) printf("Error\n");
 
     return 0;
 }

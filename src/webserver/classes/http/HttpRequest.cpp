@@ -17,7 +17,7 @@ static std::vector<std::string> split(std::string const &str, const std::string&
 HttpRequest::HttpRequest() {}
 HttpRequest::~HttpRequest() {}
 
-Headers& HttpRequest::getHeaders() {
+Headers HttpRequest::getHeaders() const {
     return headers;
 }
 
@@ -37,7 +37,7 @@ HttpRequest::Methods HttpRequest::strToMethod(std::string str) {
     return HttpRequest::Methods::GET;
 }
 
-void HttpRequest::parseHeader(std::uint8_t* buffer, std::size_t length) {
+void HttpRequest::parseHeader(const std::uint8_t* buffer, std::size_t length) {
     std::string requestString(buffer, buffer + length);
 
     requestString.erase(requestString.size() - 4);
@@ -57,14 +57,18 @@ void HttpRequest::parseHeader(std::uint8_t* buffer, std::size_t length) {
     path = requestLineParts[1];
 }
 
-HttpRequest::Methods HttpRequest::getMethod() {
+HttpRequest::Methods HttpRequest::getMethod() const {
     return method;
 }
 
-std::string HttpRequest::getPath() {
+std::string HttpRequest::getPath() const {
     return path;
 }
 
-std::vector<std::uint8_t> HttpRequest::getBody() {
+std::vector<std::uint8_t> HttpRequest::getBody() const {
     return body;
+}
+
+void HttpRequest::setBody(std::vector<std::uint8_t> v) {
+    body = v;
 }

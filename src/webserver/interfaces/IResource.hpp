@@ -1,11 +1,9 @@
 #pragma once
 
-#include <memory>
-
-#include "HttpResponse.hpp"
-#include "HttpRequest.hpp"
+#include "http/HttpResponse.hpp"
+#include "http/HttpRequest.hpp"
 
 class IResource {
 public:
-    virtual std::unique_ptr<HttpResponse> getResponse(const HttpRequest& req) = 0;
+    virtual HttpResponse getResponse(const HttpRequest& req) = 0;
 };

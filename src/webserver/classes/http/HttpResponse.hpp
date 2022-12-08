@@ -18,6 +18,7 @@ public:
     ~HttpResponse();
 
     Headers& getHeaders();
+    
 
     void setBody(std::vector<std::uint8_t> _body);
 

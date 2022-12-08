@@ -9,5 +9,5 @@ public:
     FileResource(std::string _filePath);
     ~FileResource();
     
-    std::unique_ptr<HttpResponse> getResponse(const HttpRequest& req);
+    HttpResponse getResponse(const HttpRequest& req);
 };
