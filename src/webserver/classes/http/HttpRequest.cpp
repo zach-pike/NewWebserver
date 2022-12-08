@@ -1,8 +1,6 @@
 #include "HttpRequest.hpp"
 
 #include <algorithm>
-#include <iostream>
-
 static std::vector<std::string> split(std::string const &str, const std::string& delim) {
     std::vector<std::string> tokens;
     size_t start;

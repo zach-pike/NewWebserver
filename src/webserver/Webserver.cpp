@@ -7,8 +7,6 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-#include <iostream>
-
 Webserver::Webserver(std::uint16_t _port, std::string _host):
     port{_port},
     host{_host} {}
