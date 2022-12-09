@@ -43,20 +43,38 @@ static std::shared_ptr<IResource> patternMatch(
     std::string& resourceName
 ) {
     for (const auto& resource : resources) {
+        // Remove control pages from the search
         if (stringStartsEndsWith(resource.first, '<', '>')) continue;
-        auto parts = split(resource.first, "/");
 
-        if (parts.size() == 0) {
+        // Get parts of path
+        auto pathParts = split(path, "/");
+
+        if (pathParts.size() == 0) {
+            // If its empty then its just the / resource
+            resourceName = "/";
             return sendResource("/", resources);
-        } else {
-            auto urlParts = split(path, "/");
+        }
 
-            if (urlParts.size() != parts.size()) continue;
+        auto resourceParts = split(resource.first, "/");
 
-            for (int i = 0; i < urlParts.size(); i++) {
-                if (urlParts[i] != parts[i] || stringStartsEndsWith(parts[i], '[', ']') == false) continue;
+        // If they arent the same length, then they
+        // probably arent talking about the same resource
+        if (pathParts.size() != resourceParts.size()) continue;
+        
+        bool notAMatch = false;
+
+        for (int i = 0; i < pathParts.size(); i++) {
+            // Check if the parts are the same or if the resourcePart has a url parameter
+            if (!stringStartsEndsWith(resourceParts[i], '[', ']')) {
+                if (pathParts[i] != resourceParts[i]) {
+                    notAMatch = true;
+                    break;
+                }
             }
+        }
 
+        if (!notAMatch) {
+            // If we got here, we have found a match
             resourceName = resource.first;
             return resource.second;
         }

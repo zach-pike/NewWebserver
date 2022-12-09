@@ -108,7 +108,7 @@ bool Webserver::start(std::function<void(std::string)> cb) {
         // Get the response from the controller
         auto resource = controller->getResource(request.getBasePath(), resourcePath);
 
-        request.parseUrlParams(resourcePath);
+        if (resourcePath != "<None>") request.parseUrlParams(resourcePath);
 
         auto response = resource->getResponse(request);
         

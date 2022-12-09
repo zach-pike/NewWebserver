@@ -9,7 +9,7 @@ class MyResource : public IResource {
 public:
     HttpResponse getResponse(const HttpRequest& req) {
         if (req.getMethod() != HttpRequest::Methods::POST)
-            return TextResource("Error", 403).getResponse(req);
+            return TextResource("Wrong method", 403).getResponse(req);
         // Read the body into a 
         auto body = req.getBody();
         std::string text(body.begin(), body.end());
@@ -25,7 +25,9 @@ class TestResource : public IResource {
 public:
     HttpResponse getResponse(const HttpRequest& req) {
         // Create a text resource and get the response
-        return TextResource(req.getURLParams().at("item"), 200).getResponse(req);
+        std::string s = req.getURLParams().at("item");
+
+        return TextResource(s, 200).getResponse(req);
     }
 };
 
@@ -33,11 +35,11 @@ int main(int argc, char** argv) {
     // Make a new ResourceManager
     auto controller = std::make_shared<ResourceManager>();
 
-    controller->addResource("/[item]/[test]", std::make_shared<TestResource>());
+    controller->addResource("/first/[item]/[test]", std::make_shared<TestResource>());
     controller->addResource("/test", std::make_shared<MyResource>());
     controller->addResource("<NoResourceFound>", std::make_shared<TextResource>("Could not find page!", 404));
 
-    Webserver server("0.0.0.0", 8081);
+    Webserver server("0.0.0.0", 8080);
 
     // RouteController
     server.setResourceController(controller);
