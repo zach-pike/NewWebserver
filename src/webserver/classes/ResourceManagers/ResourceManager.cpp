@@ -1,8 +1,6 @@
 #include "ResourceManager.hpp"
 #include "Resources/TextResource.hpp"
 
-#include <iostream>
-
 #include <algorithm>
 static std::vector<std::string> split(std::string const &str, const std::string& delim) {
     std::vector<std::string> tokens;

@@ -25,9 +25,22 @@ class TestResource : public IResource {
 public:
     HttpResponse getResponse(const HttpRequest& req) {
         // Create a text resource and get the response
-        std::string s = req.getURLParams().at("item");
+        auto urlparams = req.getURLParams();
+        auto queryparams = req.getQueryParams();
 
-        return TextResource(s, 200).getResponse(req);
+        std::string f = "URL parameters:\n";
+
+        for (const auto& param : urlparams) {
+            f += param.first + ": " + param.second + "\n";
+        }
+
+        f += "\nQuery parameters:\n";
+
+        for (const auto& param : queryparams) {
+            f += param.first + ": " + param.second + "\n";
+        }
+
+        return TextResource(f, 200).getResponse(req);
     }
 };
 
@@ -35,8 +48,9 @@ int main(int argc, char** argv) {
     // Make a new ResourceManager
     auto controller = std::make_shared<ResourceManager>();
 
-    controller->addResource("/first/[item]/[test]", std::make_shared<TestResource>());
+    controller->addResource("/first/[item1]/[item2]", std::make_shared<TestResource>());
     controller->addResource("/test", std::make_shared<MyResource>());
+
     controller->addResource("<NoResourceFound>", std::make_shared<TextResource>("Could not find page!", 404));
 
     Webserver server("0.0.0.0", 8080);

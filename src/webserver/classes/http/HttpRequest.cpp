@@ -36,6 +36,23 @@ static bool stringStartsEndsWith(std::string str, char start, char end) {
     return *str.begin() == start && *(str.end() - 1) == end;
 }
 
+static void decodeURL(std::string& s) {
+    std::size_t lastPos = 0;
+    while(true) {
+        std::size_t pos = s.find('%', lastPos);
+
+        if (pos == std::string::npos) break;
+
+        std::string encoded = s.substr(pos + 1, 2);
+        char decoded = std::stoi(encoded, nullptr, 16);
+
+        s.erase(pos, 3);
+        s.insert(s.begin() + pos, decoded);
+
+        lastPos = pos + 1;
+    }
+}
+
 static void parseQuery(std::string query, std::map<std::string, std::string>& params) {
     query.erase(0, 1);
 
@@ -51,6 +68,8 @@ static void parseQuery(std::string query, std::map<std::string, std::string>& pa
 
         trim(key);
         trim(value);
+
+        decodeURL(value);
 
         params.insert({ key, value });
     }
@@ -158,6 +177,8 @@ void HttpRequest::parseUrlParams(std::string resourcePath) {
         key.erase(0, 1);
         key.erase(key.size() - 1);
 
-        urlParams.insert({ key, basePathParts[i] });
+        std::string value = basePathParts[i];
+
+        urlParams.insert({ key, value });
     }
 }
