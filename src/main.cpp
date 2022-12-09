@@ -3,7 +3,11 @@
 #include "Resources/FileResource.hpp"
 #include "Resources/TextResource.hpp"
 
+#include "webutils/WebUtils.hpp"
+
 #include <iostream>
+#include <arpa/inet.h>
+#include <string.h>
 
 class MyResource : public IResource {
 public:
@@ -39,6 +43,10 @@ public:
         for (const auto& param : queryparams) {
             f += param.first + ": " + param.second + "\n";
         }
+
+        std::string ip = WebUtils::getIPFromSockAddr(req.getClientAddress());
+
+        f += "\nClient IP: " + ip + ":" + std::to_string(htons(req.getClientAddress().sin_port));
 
         return TextResource(f, 200).getResponse(req);
     }
