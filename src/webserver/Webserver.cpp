@@ -1,13 +1,15 @@
 #include "Webserver.hpp"
 
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
 #include <unistd.h>
 
-Webserver::Webserver(std::uint16_t _port):
+Webserver::Webserver(std::string _host, std::uint16_t _port):
+    host{_host},
     port{_port} {}
 
 Webserver::~Webserver() {
@@ -28,13 +30,18 @@ bool Webserver::start(std::function<void(std::string)> cb) {
 
     server.sin_family = AF_INET;
     server.sin_port = htons(port);
-    server.sin_addr.s_addr = INADDR_ANY;
+    // server.sin_addr.s_addr = INADDR_ANY;
+    inet_pton(AF_INET, host.c_str(), &server.sin_addr);
 
     if(bind(serverfd, (const sockaddr*)&server, sizeof(sockaddr_in)) < 0) return false;
 
     // Ready to start listening
 
     if(listen(serverfd, 25) < 0) return false;
+
+    std::string full_host = host + ":" + std::to_string(port);
+
+    cb(full_host);
 
     while(true) {
         sockaddr_in client_address;
@@ -98,7 +105,7 @@ bool Webserver::start(std::function<void(std::string)> cb) {
 
         // Get the response from the controller
         auto response = controller->
-            getResource(request.getPath())->
+            getResource(request.getBasePath())->
             getResponse(request);
         
         // WIP

@@ -17,9 +17,13 @@ public:
     };
 private:
     Methods method;
-    std::string path;
+    std::string basePath;
+    std::string fullPath;
     Headers headers;
     std::vector<std::uint8_t> body;
+
+    std::map<std::string, std::string> queryParams;
+    std::map<std::string, std::string> urlParams;
 
     static Methods strToMethod(std::string method);
 public:
@@ -34,7 +38,13 @@ public:
     void parseHeader(const std::uint8_t* buffer, std::size_t length);
 
     Methods getMethod() const;
-    std::string getPath() const;
+    std::string getFullPath() const;
+
+    // Path without query params or anything else
+    std::string getBasePath() const;
+
+    std::map<std::string, std::string> getQueryParams() const;
+    std::map<std::string, std::string> getURLParams() const;
 
     std::vector<std::uint8_t> getBody() const;
 };

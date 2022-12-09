@@ -17,7 +17,7 @@ public:
         std::cout << text << "\n";
 
         // Create a text resource and get the response
-        return TextResource("Ok", 200).getResponse(req);
+        return TextResource(req.getQueryParams().at("testing"), 200).getResponse(req);
     }
 };
 
@@ -29,12 +29,14 @@ int main(int argc, char** argv) {
     controller->addResource("/test", std::make_shared<MyResource>());
     controller->addResource("<NoResourceFound>", std::make_shared<TextResource>("Could not find page!", 404));
 
-    Webserver server(8080);
+    Webserver server("0.0.0.0", 8080);
 
     // RouteController
     server.setResourceController(controller);
 
-    if(!server.start([](std::string s){})) printf("Error\n");
+    if(!server.start([](std::string s){
+        std::cout << "Listening on: " << s << "\n";
+    })) printf("Error\n");
 
     return 0;
 }
