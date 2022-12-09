@@ -15,7 +15,7 @@ static std::shared_ptr<IResource> patternMatch(
     std::map<std::string, std::shared_ptr<IResource>>& resources
 ) {
     for (const auto& resource : resources) {
-
+        
     }
 
     if (resources.count("<NoResourceFound>") != 0) {
