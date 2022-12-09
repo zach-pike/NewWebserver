@@ -98,7 +98,7 @@ HttpRequest::Methods HttpRequest::strToMethod(std::string str) {
     return HttpRequest::Methods::GET;
 }
 
-void HttpRequest::parseHeader(const std::uint8_t* buffer, std::size_t length) {
+void HttpRequest::parseHeader(const std::uint8_t* buffer, std::size_t length, sockaddr_in address) {
     std::string requestString(buffer, buffer + length);
 
     requestString.erase(requestString.size() - 4);
@@ -132,6 +132,8 @@ void HttpRequest::parseHeader(const std::uint8_t* buffer, std::size_t length) {
     } else {
         basePath = fullPath;
     }
+
+    clientAddress = address;
 }
 
 HttpRequest::Methods HttpRequest::getMethod() const {
@@ -160,6 +162,10 @@ std::vector<std::uint8_t> HttpRequest::getBody() const {
 
 void HttpRequest::setBody(std::vector<std::uint8_t> v) {
     body = v;
+}
+
+sockaddr_in HttpRequest::getClientAddress() const {
+    return clientAddress;
 }
 
 void HttpRequest::parseUrlParams(std::string resourcePath) {

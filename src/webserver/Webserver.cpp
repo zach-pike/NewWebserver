@@ -73,7 +73,7 @@ bool Webserver::start(std::function<void(std::string)> cb) {
         std::size_t header_len = header_end - (const char*)header_buffer;
 
         HttpRequest request;
-        request.parseHeader(header_buffer, header_len);
+        request.parseHeader(header_buffer, header_len, client_address);
         Headers req_headers = request.getHeaders();
 
         // Now we need to read the entire body
