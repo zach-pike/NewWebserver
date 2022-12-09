@@ -52,6 +52,7 @@ bool Webserver::start(std::function<void(std::string)> cb) {
 
         // Create buffer for incoming http header
         std::uint8_t* header_buffer = new std::uint8_t[4096];
+        memset(header_buffer, 0, 4096);
         std::size_t header_buffer_size = 0;
         
         // Read until header is fully read;
@@ -87,7 +88,7 @@ bool Webserver::start(std::function<void(std::string)> cb) {
             std::uint8_t* body_buffer = new std::uint8_t[content_length];
             std::size_t read_bytes = header_buffer_size - header_len;
 
-            // Copy any extra data got by the 
+            // Copy any extra data got by the header
             memcpy(body_buffer, header_end, read_bytes);
 
             // Read rest of content
