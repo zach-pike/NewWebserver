@@ -7,9 +7,8 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-Webserver::Webserver(std::uint16_t _port, std::string _host):
-    port{_port},
-    host{_host} {}
+Webserver::Webserver(std::uint16_t _port):
+    port{_port} {}
 
 Webserver::~Webserver() {
     shutdown(serverfd, SHUT_RDWR);

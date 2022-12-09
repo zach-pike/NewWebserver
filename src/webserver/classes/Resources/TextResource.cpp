@@ -9,6 +9,7 @@ TextResource::~TextResource() {}
 HttpResponse TextResource::getResponse(const HttpRequest& req) {
     auto resp = HttpResponse(code, "Ok");
 
+    resp.getHeaders().addHeader("content-type", "text/plain");
     resp.setBody(std::vector<std::uint8_t>(text.begin(), text.end()));
 
     return resp;
