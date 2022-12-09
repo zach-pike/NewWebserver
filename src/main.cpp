@@ -17,7 +17,15 @@ public:
         std::cout << text << "\n";
 
         // Create a text resource and get the response
-        return TextResource(req.getQueryParams().at("testing"), 200).getResponse(req);
+        return TextResource(req.getURLParams().at("item"), 200).getResponse(req);
+    }
+};
+
+class TestResource : public IResource {
+public:
+    HttpResponse getResponse(const HttpRequest& req) {
+        // Create a text resource and get the response
+        return TextResource(req.getURLParams().at("item"), 200).getResponse(req);
     }
 };
 
@@ -25,11 +33,11 @@ int main(int argc, char** argv) {
     // Make a new ResourceManager
     auto controller = std::make_shared<ResourceManager>();
 
-    controller->addResource("/", std::make_shared<FileResource>("/home/zachary/webserver/src/index.html"));
+    controller->addResource("/[item]/[test]", std::make_shared<TestResource>());
     controller->addResource("/test", std::make_shared<MyResource>());
     controller->addResource("<NoResourceFound>", std::make_shared<TextResource>("Could not find page!", 404));
 
-    Webserver server("0.0.0.0", 8080);
+    Webserver server("0.0.0.0", 8081);
 
     // RouteController
     server.setResourceController(controller);

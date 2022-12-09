@@ -45,6 +45,7 @@ public:
 
     std::map<std::string, std::string> getQueryParams() const;
     std::map<std::string, std::string> getURLParams() const;
+    void parseUrlParams(std::string resourcePath);
 
     std::vector<std::uint8_t> getBody() const;
 };

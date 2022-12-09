@@ -5,5 +5,5 @@
 
 class IResourceController {
 public:
-    virtual std::shared_ptr<IResource> getResource(std::string path) = 0;
+    virtual std::shared_ptr<IResource> getResource(std::string path, std::string& resourceName) = 0;
 };

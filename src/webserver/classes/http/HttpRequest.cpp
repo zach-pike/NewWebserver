@@ -32,6 +32,10 @@ static inline void trim(std::string &s) {
     ltrim(s);
 }
 
+static bool stringStartsEndsWith(std::string str, char start, char end) {
+    return *str.begin() == start && *(str.end() - 1) == end;
+}
+
 static void parseQuery(std::string query, std::map<std::string, std::string>& params) {
     query.erase(0, 1);
 
@@ -127,10 +131,33 @@ std::map<std::string, std::string> HttpRequest::getQueryParams() const {
     return queryParams;
 }
 
+std::map<std::string, std::string> HttpRequest::getURLParams() const {
+    return urlParams;
+}
+
 std::vector<std::uint8_t> HttpRequest::getBody() const {
     return body;
 }
 
 void HttpRequest::setBody(std::vector<std::uint8_t> v) {
     body = v;
+}
+
+void HttpRequest::parseUrlParams(std::string resourcePath) {
+    // Parse the resourcePath using the basePath to extract the url parameters
+    auto basePathParts = split(getBasePath(), "/");
+    auto resourcePathParts = split(resourcePath, "/");
+
+    if (basePathParts.size() != resourcePathParts.size()) return;
+
+    for (int i = 0; i < basePathParts.size(); i++) {
+        if (!stringStartsEndsWith(resourcePathParts[i], '[', ']')) continue;
+
+        std::string key = resourcePathParts[i];
+        // Remove brackets
+        key.erase(0, 1);
+        key.erase(key.size() - 1);
+
+        urlParams.insert({ key, basePathParts[i] });
+    }
 }

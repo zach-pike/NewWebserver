@@ -103,10 +103,14 @@ bool Webserver::start(std::function<void(std::string)> cb) {
         // Free the header buffer
         delete[] header_buffer;
 
+        std::string resourcePath;
+
         // Get the response from the controller
-        auto response = controller->
-            getResource(request.getBasePath())->
-            getResponse(request);
+        auto resource = controller->getResource(request.getBasePath(), resourcePath);
+
+        request.parseUrlParams(resourcePath);
+
+        auto response = resource->getResponse(request);
         
         // WIP
         response.getHeaders().addHeader("keep-alive", "close");
